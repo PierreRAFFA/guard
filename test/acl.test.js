@@ -11,17 +11,17 @@ test.beforeEach(t => {
 
 test('NO access specified so any user should have access', async t => {
   const user = {
-    roles: ['authenticated']
+    roles: ['marketing']
   };
   t.is(acl.can(user, 'GET', '/api/cases'), true);
 });
 
 
 test('User with a role matching an denied access should NOT have access', async t => {
-  acl.add(['authenticated'], 'GET' , '/api/cases', 'deny');
+  acl.add(['marketing'], 'GET' , '/api/cases', 'deny');
 
   const user = {
-    roles: ['authenticated']
+    roles: ['marketing']
   };
 
   t.is(acl.can(user, 'GET', '/api/cases'), false)
@@ -37,6 +37,29 @@ test('When a deny access for all (with the denyAll), no user should have access'
   t.is(acl.can(user, 'GET', '/api/cases'), false)
 });
 
+test('When an access for authenticated allows some url, the user with id, is considered as authenticated and should have access', async t => {
+  acl.denyAll();
+  acl.add(['authenticated'], 'GET' , '/api/cases', 'allow');
+
+  //user is by default authenticated if it contains an id
+  const user = {
+    id: 34,
+    roles: []
+  };
+  t.is(acl.can(user, 'GET', '/api/cases'), true)
+});
+
+test('When an access for authenticated allows some url, the user with no id should NOT have access', async t => {
+  acl.denyAll();
+  acl.add(['authenticated'], 'GET' , '/api/cases', 'allow');
+
+  //user is by default authenticated if it contains an id
+  const user = {
+    roles: []
+  };
+  t.is(acl.can(user, 'GET', '/api/cases'), false)
+});
+
 test('When a deny access for all, no user should have access', async t => {
   acl.add(['any'], 'any' , '.*', 'deny');
 
@@ -49,10 +72,10 @@ test('When a deny access for all, no user should have access', async t => {
 
 test('User with an array of role matching an allowed access should have access', async t => {
   acl.add(['any'], 'any' , '.*', 'deny');
-  acl.add(['authenticated'], 'GET' , '/api/cases', 'allow');
+  acl.add(['role1'], 'GET' , '/api/cases', 'allow');
 
   const user = {
-    roles: ['admin', 'authenticated']
+    roles: ['admin', 'role1']
   };
 
   t.is(acl.can(user, 'GET', '/api/cases'), true)
@@ -63,51 +86,51 @@ test('User with an array of role NOT matching an allowed access should NOT have 
   acl.add(['developer'], 'GET' , '/api/cases', 'allow');
 
   const user = {
-    roles: ['admin', 'authenticated']
+    roles: ['admin', 'role1']
   };
 
   t.is(acl.can(user, 'GET', '/api/cases'), false)
 });
 
-test('When a authenticated access allows some POST url with wildcard, any authenticated should have access', async t => {
+test('When a role1 access allows some POST url with wildcard, any role1 should have access', async t => {
   acl.add(['any'], 'any' , '.*', 'deny');
-  acl.add(['authenticated'], 'POST' , '/api/cases/.*', 'allow');
+  acl.add(['role1'], 'POST' , '/api/cases/.*', 'allow');
 
   const user = {
-    roles: ['authenticated']
+    roles: ['role1']
   };
 
   t.is(acl.can(user, 'POST', '/api/cases/123-abc'), true)
 });
 
-test('When a authenticated access denies some POST url with wildcard, any authenticated should NOT have access', async t => {
+test('When a role1 access denies some POST url with wildcard, any role1 should NOT have access', async t => {
   acl.add(['any'], 'any' , '.*', 'deny');
-  acl.add(['authenticated'], 'POST' , '/api/cases/.^[\/]*', 'allow');
+  acl.add(['role1'], 'POST' , '/api/cases/.^[\/]*', 'allow');
 
   const user = {
-    roles: ['authenticated']
+    roles: ['role1']
   };
 
   t.is(acl.can(user, 'POST', '/api/cases/123-abc/rr'), false)
 });
 
-test('When a authenticated access allows some url with wildcard, any authenticated should have access', async t => {
+test('When a role1 access allows some url with wildcard, any role1 should have access', async t => {
   acl.add(['any'], 'any' , '.*', 'deny');
-  acl.add(['authenticated'], 'GET' , '/api/cases/.*/comments/.*', 'allow');
+  acl.add(['role1'], 'GET' , '/api/cases/.*/comments/.*', 'allow');
 
   const user = {
-    roles: ['authenticated']
+    roles: ['role1']
   };
 
   t.is(acl.can(user, 'GET', '/api/cases/123-abc/comments/456-abc'), true)
 });
 
-test('When a authenticated access allows some url with wildcard, any authenticated should NOT have access', async t => {
+test('When a role1 access allows some url with wildcard, any role1 should NOT have access', async t => {
   acl.add(['any'], 'any' , '.*', 'deny');
-  acl.add(['authenticated'], 'GET' , '/api/cases/.*/comments/.*', 'deny');
+  acl.add(['role1'], 'GET' , '/api/cases/.*/comments/.*', 'deny');
 
   const user = {
-    roles: ['authenticated']
+    roles: ['role1']
   };
 
   t.is(acl.can(user, 'GET', '/api/cases/123-abc/comments/456-abc'), false)
@@ -118,7 +141,7 @@ test('When a admin access allows all, any admin should have access', async t => 
   acl.add(['admin'], 'GET' , '.*', 'allow');
 
   const user = {
-    roles: ['admin', 'authenticated']
+    roles: ['admin', 'role1']
   };
 
   t.is(acl.can(user, 'GET', '/api/cases'), true)
@@ -129,7 +152,7 @@ test('When a admin access allows all, any admin with other role should have acce
   acl.add(['admin'], 'GET' , '/api/.*', 'allow');
 
   const user = {
-    roles: ['admin', 'authenticated']
+    roles: ['admin', 'role1']
   };
 
   t.is(acl.can(user, 'GET', '/api/cases'), true)
@@ -140,7 +163,7 @@ test('When a admin access allows all, any user other than admin should NOT have 
   acl.add(['admin'], 'GET' , '.*', 'allow');
 
   const user = {
-    roles: ['authenticated']
+    roles: ['role1']
   };
 
   t.is(acl.can(user, 'GET', '/api/cases'), false)
@@ -155,7 +178,7 @@ test('When a custom roles getter is specified, the user is admin, any admin shou
   acl.add(['admin'], 'GET' , '/api/.*', 'allow');
 
   const user = {
-    customRoles: ['admin', 'authenticated']
+    customRoles: ['admin', 'role1']
   };
 
   t.is(acl.can(user, 'GET', '/api/cases'), true)
@@ -167,7 +190,7 @@ test('When a custom roles getter is specified, the user is admin, any admin shou
   });
 
   acl.add(['any'], 'any' , '.*', 'deny');
-  acl.add(['authenticated'], 'GET' , '/api/.*', 'allow');
+  acl.add(['role1'], 'GET' , '/api/.*', 'allow');
 
   const user = {
     customRoles: ['anonymous']

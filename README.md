@@ -10,6 +10,7 @@ $ npm install node-access-control --save
 
 ## Define the authorisations
 It's recommended to deny access to all, then allows the routes for some specific roles.
+Note that an user is *by default considered as authenticated* if it contains an id.
 
 ```js
 const acl = require('node-access-control');  
@@ -26,16 +27,30 @@ Checks the access by getting the user roles
 ```js
 const user = {
     ...
-    roles: ['authenticated'],
+    roles: ['marketing'],
   };
 acl.can(user, 'GET', '/api/cases/123-abc/comments/456-abc') // return true
+acl.can(user, 'GET', '/api/cases/123-abc') // return true
+acl.can(user, 'POST', '/api/cases/123-abc') // return true
+acl.can(user, 'DELETE', '/api/cases/123-abc') // return false
 ```
 ```js
+//this user will be considered as authenticated because it contains an id
 const user = {
-    roles: ['marketing']
+    id: 34,
+    roles: []
 };
 acl.can(user, 'GET', '/api/cases/123-abc') // return true
 acl.can(user, 'POST', '/api/cases/123-abc') // return true
+acl.can(user, 'DELETE', '/api/cases/123-abc') // return false
+```
+```js
+//this user will NOT be considered as authenticated because it does not contains any id
+const user = {
+    roles: []
+};
+acl.can(user, 'GET', '/api/cases/123-abc') // return false
+acl.can(user, 'POST', '/api/cases/123-abc') // return false
 acl.can(user, 'DELETE', '/api/cases/123-abc') // return false
 ```
 
@@ -76,7 +91,7 @@ acl.add(['any'], 'any' , '.*', 'deny');
 ### add(roles, verb, url, permission)
 Adds a specific access control.  
 
->*roles* {Array<string>} Any roles that you want. The wilcard 'any' can be used  
+>*roles* {Array<string>} Any roles that you want. The role 'any' and 'authenticated' already exist  
 *verb* {string} GET|POST|PATCH|PUT|DELETE|any (wildcard)  
 *url* {string} RegExp route  
 *permission* {string} allow|deny  
