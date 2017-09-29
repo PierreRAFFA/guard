@@ -27,6 +27,15 @@ test('User with a role matching an denied access should NOT have access', async 
   t.is(acl.can(user, 'GET', '/api/cases'), false)
 });
 
+test('When a deny access for all (with the denyAll), no user should have access', async t => {
+  acl.denyAll();
+
+  const user = {
+    roles: ['anonymous']
+  };
+
+  t.is(acl.can(user, 'GET', '/api/cases'), false)
+});
 
 test('When a deny access for all, no user should have access', async t => {
   acl.add(['any'], 'any' , '.*', 'deny');
@@ -189,4 +198,17 @@ test('When a custom roles getter is specified, the user is admin, any admin shou
   };
 
   t.is(acl.can(user, 'GET', '/api/cases'), true)
+});
+
+
+test('When no access is specified, an user with NO role should have access', async t => {
+  const user = {};
+
+  t.is(acl.can(user, 'GET', '/api/cases'), true)
+});
+
+test('When all access is denied, an user with NO role should NOT have access', async t => {
+  const user = {};
+  acl.denyAll();
+  t.is(acl.can(user, 'GET', '/api/cases'), false)
 });

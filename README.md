@@ -12,9 +12,9 @@ $ npm install node-access-control --save
 It's recommended to deny access to all, then allows the routes for some specific roles.
 
 ```js
-const acl = require('node-access-control');
-
-acl.add(['any'], 'any' , '.*', 'deny');
+const acl = require('node-access-control');  
+  
+acl.denyAll();
 acl.add(['admin', 'developer'], 'any' , '.*', 'allow');
 acl.add(['authenticated', 'marketing'], 'GET' , '/api/cases/.*', 'allow');
 acl.add(['authenticated', 'marketing'], 'POST' , '/api/cases/.*', 'allow');
@@ -62,6 +62,15 @@ const user = {
 acl.can(user, 'GET', '/api/cases') // return true
 ```
 
+## Denies all 
+Checks the access by getting the user roles  
+```js
+acl.denyAll();
+  
+//this is the same as 
+acl.add(['any'], 'any' , '.*', 'deny');
+```
+
 ## Documentation
 
 ### add(roles, verb, url, permission)
@@ -84,3 +93,5 @@ Defines a custom method to retrieve the user roles
 
 >*method* {Function} Function called when acl needs to retrieve the user roles  
 
+### denyAll()  
+Denies all routes for all users  
