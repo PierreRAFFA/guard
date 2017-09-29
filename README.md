@@ -2,6 +2,7 @@
 
 This library provides a minimalistic ACL implementation with no connection to a database.
 
+
 ## Installation
 ```bash
 $ npm install node-acl --save
@@ -30,7 +31,7 @@ acl.can(user, 'GET', '/api/cases/123-abc/comments/456-abc') // return true
 ```js
 const user = {
     roles: ['marketing']
-  };
+};
 acl.can(user, 'GET', '/api/cases/123-abc') // return true
 acl.can(user, 'POST', '/api/cases/123-abc') // return true
 acl.can(user, 'DELETE', '/api/cases/123-abc') // return false
@@ -53,8 +54,8 @@ acl.setRolesGetter(user => {
 const user = {
     ...
     admin: true,
-    authenticated: true,
-  };
+    developer: true,
+};
 
 acl.can(user, 'GET', '/api/cases') // return true
 ```
@@ -64,7 +65,7 @@ acl.can(user, 'GET', '/api/cases') // return true
 ### add(roles, verb, url, permission)
 Adds a specific access control.  
 
->*roles* {Array<string>} Any roles that you want. The wilcard 'any' can be used
+>*roles* {Array<string>} Any roles that you want. The wilcard 'any' can be used  
 *verb* {string} GET|POST|PATCH|PUT|DELETE|any (wildcard)  
 *url* {string} RegExp route  
 *permission* {string} allow|deny  
@@ -74,7 +75,7 @@ Returns if the user have access to a specific route.
 
 >*user* {object} User containing the roles  
 *verb* {string} GET|POST|PATCH|PUT|DELETE|any (wildcard)  
-*url* {string} Route to test
+*url* {string} Route to test  
 
 ### setRolesGetter(method)  
 Defines a custom method to retrieve the user roles  
