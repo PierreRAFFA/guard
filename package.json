@@ -1,0 +1,52 @@
+{
+  "name": "node-access-control",
+  "version": "0.0.1",
+  "main": "lib/index.js",
+  "engines": {
+    "node": ">=4"
+  },
+  "scripts": {
+    "test": "NODE_ENV=test node $NODE_DEBUG_OPTION ./node_modules/.bin/ava --verbose --serial"
+  },
+  "devDependencies": {
+    "ava": "^0.22.0",
+    "lodash": "^4.17.4"
+  },
+  "ava": {
+    "files": [
+      "**/*.test.js"
+    ],
+    "source": [
+      "**/*.{js,json}"
+    ],
+    "concurrency": 2,
+    "failFast": true,
+    "failWithoutAssertions": false,
+    "tap": true,
+    "powerAssert": false
+  },
+  "description": "This library provides a minimalistic ACL implementation with no connection to a database.",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "ava": "^0.22.0",
+    "lodash": "^4.17.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PierreRAFFA/node-access-control.git"
+  },
+  "keywords": [
+    "acl",
+    "authorisation",
+    "authentication",
+    "guard"
+  ],
+  "author": "Pierre RAFFA",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/PierreRAFFA/node-access-control/issues"
+  },
+  "homepage": "https://github.com/PierreRAFFA/node-access-control#readme"
+}
