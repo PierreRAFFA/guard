@@ -2,15 +2,13 @@
 
 This library provides a minimalistic ACL implementation with no connection to a database.
 
-### Installation
+## Installation
 ```bash
 $ npm install node-acl --save
-
-
 ```
 
-### Define the authorisations
-It's recommended to deny access to all, then allows the routes for a specific role.
+## Define the authorisations
+It's recommended to deny access to all, then allows the routes for some specific roles.
 
 ```js
 acl.add(['any'], 'any' , '.*', 'deny');
@@ -20,7 +18,7 @@ acl.add(['authenticated', 'marketing'], 'POST' , '/api/cases/.*', 'allow');
 acl.add(['marketing'], 'DELETE' , '/api/cases/.*', 'deny');
 ```
 
-### Check the access
+## Check the access
 Checks the access by getting the user roles
 ```js
 const user = {
@@ -38,7 +36,7 @@ acl.can(user, 'POST', '/api/cases/123-abc') // return true
 acl.can(user, 'DELETE', '/api/cases/123-abc') // return false
 ```
 
-### Custom user structure
+## Custom user structure
 ```js
 
 acl.setRolesGetter(user => {
@@ -61,24 +59,24 @@ const user = {
 acl.can(user, 'GET', '/api/cases') // return true
 ```
 
-### Documentation
+## Documentation
 
-#### add(roles, verb, url, permission)
+### add(roles, verb, url, permission)
 Adds a specific access control.  
 
->*roles* {Array<string>} Any role that you want. any may be used a wildcard  
+>*roles* {Array<string>} Any roles that you want. The wilcard 'any' can be used
 *verb* {string} GET|POST|PATCH|PUT|DELETE|any (wildcard)  
 *url* {string} RegExp route  
 *permission* {string} allow|deny  
   
-#### can(user, verb, url)
+### can(user, verb, url)
 Returns if the user have access to a specific route.  
 
->*roles* {Array<string>} Any role that you want. any may be used a wildcard  
+>*user* {object} User containing the roles  
 *verb* {string} GET|POST|PATCH|PUT|DELETE|any (wildcard)  
-*url* {string} RegExp route  
+*url* {string} Route to test
 
-#### setRolesGetter(method)  
+### setRolesGetter(method)  
 Defines a custom method to retrieve the user roles  
 
 >*method* {Function} Function called when acl needs to retrieve the user roles  
