@@ -5,13 +5,15 @@ This library provides a minimalistic ACL implementation with no connection to a 
 
 ## Installation
 ```bash
-$ npm install node-acl --save
+$ npm install node-access-control --save
 ```
 
 ## Define the authorisations
 It's recommended to deny access to all, then allows the routes for some specific roles.
 
 ```js
+const acl = require('node-access-control');
+
 acl.add(['any'], 'any' , '.*', 'deny');
 acl.add(['admin', 'developer'], 'any' , '.*', 'allow');
 acl.add(['authenticated', 'marketing'], 'GET' , '/api/cases/.*', 'allow');
