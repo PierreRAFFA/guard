@@ -26,7 +26,7 @@ Checks the access by getting the user roles
 ```js
 const user = {
     ...
-    roles: ['authenticated'],
+    roles: ['marketing'],
   };
 acl.can(user, 'GET', '/api/cases/123-abc/comments/456-abc') // return true
 ```
